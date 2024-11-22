@@ -1,0 +1,82 @@
+lcd
+ #includelpc214x.h
+ #define LCD_PORT 0x00FF0000
+ #define EN 110 define RS pin 
+ #define RS 111 define EN pin
+ #define RW 120 define RW pin P
+ #define LCD_SHIFT 16 shift data by LCD_SHIFT bits
+ void LCD_init(void);
+ void LCD_data(unsigned char);
+ void LCD_cmd(unsigned char);
+ void LCD_display(int, int, char ch);
+ void lcd_delay(unsigned int time)
+ {
+ int i,j;
+ for(i=0;itime;i++)
+ for(j=0;j200;j++);
+ }
+ void LCD_data(unsigned char ch)function to send data
+ {
+ IOCLR1 = LCD_PORT;
+ IOSET1 = chLCD_SHIFT; shift data and set only the data bits
+ IOSET0 = RS; RS =1
+ IOCLR0 = RW; [RW =0
+ IOSET0 = EN;
+ lcd_delay(100);
+ IOCLR0 = EN;EN pulse
+ }
+ void LCD_cmd(unsigned char ch) function to send command
+ {
+ IOCLR1 = LCD_PORT;
+ IOSET1 = chLCD_SHIFT;
+ IOCLR0 = RS; RS=0
+ IOCLR0 = RW;RW=0
+ IOSET0 =EN;
+ lcd_delay(100);
+ IOCLR0 = EN;EN pulse
+ }
+ void LCD_init(void)
+ {
+PINSEL0 &= 0xFF0FFFFF;Pins P0.10 and P0.11 as GPIO
+ PINSEL1 &= 0xFFFFFCFF; Pin P0.20 as GPIO
+ PINSEL2 &= 0xFFFFFFF3;PORT1 as GPIO
+ IODIR0 = RS  EN  RW;
+ IODIR1 = LCD_PORT;
+ LCD_cmd(0x38); set the pins as output
+ LCD_cmd(0x06);
+ LCD_cmd(0x0C);
+ LCD_cmd(0x01);
+ LCD_cmd(0x80);
+ }
+ void LCD_display(int row,int pos, char ch)
+ {
+ unsigned char temp;
+ if(row==1)
+ {
+ temp=0x80  (pos-1); set cursor at 1st line posposition
+ }
+ else
+ {
+ temp = 0xc0  (pos-1); set cursor at 2nd line posposition
+ }
+ LCD_cmd(temp);
+ while(ch)
+ LCD_data(ch++);while data is valid, display the string
+ }
+ void delay(unsigned int time)
+ {
+ unsigned int i,j;
+ for(i=0;itime;i++)
+ for(j=0;j5000;j++);
+ }
+ int main()
+ {
+ unsigned int temp;
+ LCD_init();
+ while(1)
+ {
+LCD_display(1,4,PCCOE);
+ LCD_display(2,4,ENTC);display buffer
+ delay(20);
+ }
+ }
