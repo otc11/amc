@@ -1,0 +1,20 @@
+#include <LPC214x.h>
+void delay(void);
+void main()
+{
+PINSEL2= 0x00000000; // All pins are GPIO
+IO1DIR = 0xFFFFFFFF; // Lower 4 pins (P0.3….P0.0) declared output
+while(1)
+{
+IO1SET = 0xFFFFFFFF; // Set lower 4 pins to HIGH logic
+ delay();
+IO1CLR = 0xFFFFFFFF; // Set lower 4 pins to LOW logic
+ delay();
+}
+}
+void delay()
+{
+int i,j;
+for(i=0;i<1000;i++)
+for(j=0;j<1200;j++);
+}
