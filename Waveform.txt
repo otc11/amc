@@ -1,0 +1,61 @@
+Exp 8:- Waveform Generation using DAC
+ Program for generating a square wave
+ #include <lpc214x.h>
+ void delay()
+ {
+ int i;
+ for(i=0;i<600000;i++);
+ }
+ int main(void)
+ {
+ unsigned int value;
+ PINSEL1 = 0x00080000;
+ value=0;
+ while(1)
+ {
+ value=1023;
+ DACR=(1<<16) | (value<<6);
+ delay();
+ value=0;
+ DACR=(1<<16)|(value<<6);
+ delay();
+ }
+ }
+ //Program for generating a square wave
+ //Select AOUT function for P0.25. bits[19:18]=[10]
+
+
+
+
+
+
+
+Exp 8B:- Waveform Generation using DAC
+ Program for generating a triangular wave.
+ #include <lpc214x.h>
+ void delay()
+ {
+ int i;
+ for(i=0;i<60000000;i++);
+ }
+ int main(void)
+ {
+ unsigned int value;
+ PINSEL1 = 0x00080000;
+ bits[19:18]=[10] value=0;
+ while(1)
+ {
+ while(value!=1023)
+ {
+ //Program for generating a triangular wave
+ //Select AOUT function for P0.25.
+ DACR=(1<<16)|(value<<6);
+ value++;
+ }
+ while(value!=0)
+ {
+ DACR=(1<<16)|(value<<6);
+ value--;
+ }
+ }
+ }
