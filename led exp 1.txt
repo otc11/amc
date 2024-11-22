@@ -1,0 +1,21 @@
+Exp 1:- LED Blinking using software delay
+ #include<lpc21xx.h>
+ void delay();
+ int main()
+ {
+ PINSEL2=0x00000000;
+ IODIR1=0xFFFFFFFF;
+ while(1)
+ {
+ IOSET1=0XFFFFFFFF;
+ delay();
+ IOCLR1=0xFFFFFFFF;
+ delay();
+ }
+ }
+ void delay()
+ {
+ int i,j;
+ for(i=0;i<1275;i++)
+ for(j=0;j<1275;j++);
+ }
