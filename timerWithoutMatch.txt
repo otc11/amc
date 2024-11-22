@@ -1,0 +1,42 @@
+// Timer part 1
+ #include<lpc214x.h>
+ void delay(unsigned int msec);
+ void PLL_Init(void);
+ int main()
+ {
+ PINSEL2=0x00000000;//All pins are GPIO
+ IO1DIR=0Xffffffff;//Configuring GPIO pin as output pin
+ PLL_Init();
+ while(1)
+ {
+ IO1SET=0Xffffffff;//to turn on the LEDS
+ delay(5000);
+ IO1CLR=0Xffffffff;//to turn off the LEDS
+ delay(5000);
+ }
+ }
+ void PLL_Init(void)
+ {
+ PLL0CON=0x01; //enable PLL0
+ PLL0CFG=0x24; //M=5, P=2
+ PLL0FEED=0Xaa; //feed sequence
+ PLL0FEED=0x55; //feed sequence
+ while(!(PLL0STAT&0x0400)); //wait until PLOCK=1
+ PLL0CON=0x03; //connect and enable PLL0
+ PLL0FEED=0Xaa; //feed sequence
+ PLL0FEED=0x55; //feed sequence
+ VPBDIV=0x01; //PCLK same as CCLK
+ }
+ void delay(unsigned int msec)
+ {
+ T0CTCR=0x0; //select timer mode
+ T0TCR=0x00; //timer off
+ T0PR=59999; //prescaler value for 1ms
+ T0TCR=0x02; //timer reset
+ T0TCR=0x01; //timer On
+ while(T0TC<msec); //1sec delay
+ T0TCR=0x00; //timer Off
+ T0TC=0; //Clear the TC value.This is optional
+ }
+
+
